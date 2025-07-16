@@ -1,8 +1,9 @@
-import joblib
-import numpy as np
 import streamlit as st
-import subprocess
 import xgboost as xgb
+import requests
+from PIL import Image
+from io import BytesIO
+import base64
 
 def init():
     model = xgb.XGBClassifier()
@@ -17,23 +18,25 @@ def init():
 
 
 def gui():
-    st.set_page_config(page_title="hello", layout="centered")
-    st.title("Counterfeit Product Detector")
+    st.title("Lazada Scraper via Backend")
+    url = st.text_input("Enter Lazada product URL:")
 
-    model = init()
+    if st.button("Scrape"):
+        if url:
+            with st.spinner("Scraping..."):
+                response = requests.post(
+                    "http://localhost:5000/scrape",
+                    json={"url": url}
+                )
+                data = response.json()
 
-    st.write("Enter product details:")
-    price = st.number_input("Price", min_value=0.0)
-    rating = st.number_input("Seller Rating", min_value=0.0, max_value=5.0)
-    reviews = st.number_input("Seller Reviews", min_value=0)
-    shipping = st.number_input("Shipping Time (days)", min_value=0)
-
-    if st.button("Predict"):
-        data = np.array([[price, rating, reviews, shipping]])
-        proba = model.predict_proba(data)
-        prediction = model.predict(data)[0]
-
-        st.write(f"Prediction: {'Counterfeit' if prediction == 1 else 'Genuine'}")
-        st.write(f"Probability of being counterfeit: {proba[0][1]:.4f}")
+            if "error" in data:
+                st.error(f"Error: {data['error']}")
+            else:
+                image_data = base64.b64decode(data["screenshot"])
+                image = Image.open(BytesIO(image_data))
+                st.image(image, caption="Screenshot", use_container_width=True)
+                st.write("**Title:**", data.get("title"))
+                st.write("**Price:**", data.get("price"))
 
 gui()
