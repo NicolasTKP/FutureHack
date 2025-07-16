@@ -1,6 +1,6 @@
 import joblib
 import numpy as np
-import streamlit_app as st
+import streamlit as st
 import subprocess
 
 
