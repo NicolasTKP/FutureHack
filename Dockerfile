@@ -23,4 +23,4 @@ COPY . /app
 
 RUN pip install -r requirements.txt
 
-CMD ["gunicorn", "webScrape.scrape_api:app"]
+CMD ["gunicorn", "webScrape.scrape_api:app", "--bind", "0.0.0.0:5000", "--timeout", "120"]
