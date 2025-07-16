@@ -2,10 +2,11 @@ import joblib
 import numpy as np
 import streamlit as st
 import subprocess
-
+import xgboost as xgb
 
 def init():
-    model = joblib.load('model/CtfPd_model.pkl')
+    model = xgb.XGBClassifier()
+    model.load_model('model/CtfPd_model.json')
     return model
 
     # data = [50.00, 5, 2, 25]
