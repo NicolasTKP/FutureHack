@@ -6,3 +6,4 @@ pandas
 scikit-learn
 selenium
 flask
+gunicorn
