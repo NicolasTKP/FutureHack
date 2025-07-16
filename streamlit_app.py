@@ -24,19 +24,25 @@ def gui():
     if st.button("Scrape"):
         if url:
             with st.spinner("Scraping..."):
-                response = requests.post(
-                    "http://localhost:5000/scrape",
-                    json={"url": url}
-                )
-                data = response.json()
-
-            if "error" in data:
-                st.error(f"Error: {data['error']}")
-            else:
-                image_data = base64.b64decode(data["screenshot"])
-                image = Image.open(BytesIO(image_data))
-                st.image(image, caption="Screenshot", use_container_width=True)
-                st.write("**Title:**", data.get("title"))
-                st.write("**Price:**", data.get("price"))
+                try:
+                    response = requests.post(
+                        "https://futurehack.onrender.com/scrape",
+                        json={"url": url},
+                        timeout=100  # Optional timeout for safety
+                    )
+                    if response.status_code == 200:
+                        data = response.json()
+                        if "error" in data:
+                            st.error(f"Error: {data['error']}")
+                        else:
+                            image_data = base64.b64decode(data["screenshot"])
+                            image = Image.open(BytesIO(image_data))
+                            st.image(image, caption="Screenshot", use_container_width=True)
+                            st.write("**Title:**", data.get("title"))
+                            st.write("**Price:**", data.get("price"))
+                    else:
+                        st.error(f"Backend Error: {response.status_code}\n{response.text}")
+                except requests.exceptions.RequestException as e:
+                    st.error(f"Request failed: {str(e)}")
 
 gui()
