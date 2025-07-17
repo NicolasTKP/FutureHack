@@ -25,9 +25,9 @@ def gui():
         if url:
             with st.spinner("Scraping..."):
                 data = t.scrape_product_info(url)
-                screenshot_data = base64.b64decode(data["screenshot"])
-                screenshot = BytesIO(screenshot_data)
-                st.image(screenshot, caption="Lazada Screenshot")
+                # screenshot_data = base64.b64decode(data["screenshot"])
+                # screenshot = BytesIO(screenshot_data)
+                # st.image(screenshot, caption="Lazada Screenshot")
                 st.write("**Title:**", data.get("title"))
                 st.write("**Price:**", data.get("price"))
                 
