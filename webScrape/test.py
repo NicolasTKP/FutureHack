@@ -22,14 +22,14 @@ def scrape_product_info(url):
             title = title_element.inner_text()
             price = price_element.inner_text()
 
-            # # Screenshot in base64
-            # screenshot_bytes = page.screenshot(full_page=True)
-            # screenshot_base64 = base64.b64encode(screenshot_bytes).decode("utf-8")
+            # Screenshot in base64
+            screenshot_bytes = page.screenshot(full_page=True)
+            screenshot_base64 = base64.b64encode(screenshot_bytes).decode("utf-8")
 
             result = {
                 "title": title,
                 "price": price,
-                # "screenshot": screenshot_base64
+                "screenshot": screenshot_base64
             }
 
         except Exception as e:
