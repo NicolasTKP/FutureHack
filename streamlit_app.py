@@ -12,6 +12,7 @@ import pandas as pd
 nltk.download('stopwords')
 nltk.download('vader_lexicon')
 from scipy.sparse import hstack
+from sklearn.metrics.pairwise import cosine_similarity
 
 malicious_words = set([
     "cheating","fuck","terrible","brainless","hell","sb","stupid","idiot","useless","not worth","sucks","garbage","trash","fool","worst","scam","hate", "dumbass", "nonsense","fake","ass",
@@ -44,6 +45,29 @@ def clean_text(text):
     tokens = text.split()
     tokens = [word for word in tokens if word not in stop_words]
     return ' '.join(tokens)
+
+def compute_cosine_similarities(df, threshold=0.85):
+    ctfpdModel, bgdModel, bgdm_vectorizer, smModel, sm_vectorizer = init()
+    tfidf_matrix = sm_vectorizer.transform(df['clean_text'])
+    similarity_matrix = cosine_similarity(tfidf_matrix)
+
+    similar_pairs = []
+    num_reviews = df.shape[0]
+
+    for i in range(num_reviews):
+        for j in range(i + 1, num_reviews):
+            similarity_score = similarity_matrix[i, j]
+            if similarity_score > threshold:
+                print(f"[DEBUG] Similarity between review {i} and {j}: {similarity_score}")
+                similar_pairs.append({
+                    "review_1": df['review'].iloc[i],
+                    "review_2": df['review'].iloc[j],
+                    "similarity_score": similarity_score
+                })
+
+    print(f"[DEBUG] Total similar pairs found: {len(similar_pairs)}")
+    return similar_pairs
+
 
 def contains_malicious(text, word_set):
     matched_words = [word for word in word_set if re.search(rf'\b{re.escape(word)}\b', text, re.IGNORECASE)]
@@ -87,12 +111,13 @@ def gui():
                     unsafe_allow_html=True
                 )
                 st.write("---")
-                
+
                 # ratings
                 for i in range(len(data["reviews"])):
                     with st.expander("Review {}".format(i+1)):
                         st.write("**Rating:**",data["ratings"][i])
                         st.write("**Has Image:**",data["has_image"][i])
+                        st.write("**Date:**",data["dates"][i])
                         st.write("**Review:**",data["reviews"][i])
 
                     # Bot detection
@@ -149,9 +174,27 @@ def gui():
                             st.write("**Malicious words:**", matchWords)
 
                     st.write("---")
-                
-                
 
+
+                #   consine similarity                
+                review_df = pd.DataFrame({
+                    'review': data["reviews"]
+                })
+
+                review_df['clean_text'] = review_df['review'].apply(clean_text)
+                similar_pairs = compute_cosine_similarities(review_df, threshold=0.75)
+
+                if similar_pairs:
+                    st.markdown(
+                        "<h1 style='text-align: center;'>Suspicious Reviews with High Similarity</h1>",
+                        unsafe_allow_html=True
+                    )
+                    for pair in similar_pairs:
+                        st.write(f"**Similarity Score:** {pair['similarity_score']:.2f}")
+                        st.write(f"• Review 1: {pair['review_1']}")
+                        st.write(f"• Review 2: {pair['review_2']}")
+                        st.write("---")
+                
     
 
 gui()

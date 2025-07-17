@@ -30,9 +30,10 @@ def scrape_product_info(url):
     try:
         driver.get(url)
         driver.set_window_size(1920, 1080)
-        wait = WebDriverWait(driver, 10)
+        wait = WebDriverWait(driver, 5)
         driver.execute_script("window.scrollTo(0, 0);")
         time.sleep(random.uniform(1, 2))
+        
         price_element = wait.until(
             EC.presence_of_element_located((By.CLASS_NAME, "pdp-price_type_normal"))
         )
@@ -55,6 +56,7 @@ def scrape_product_info(url):
         reviews = []
         ratings =[]
         has_image=[]
+        dates=[]
 
         try:
             review_elements = wait.until(
@@ -70,6 +72,8 @@ def scrape_product_info(url):
                         if star.get_attribute("src") == "https://img.lazcdn.com/g/tps/tfs/TB19ZvEgfDH8KJjy1XcXXcpdXXa-64-64.png":
                             rating += 1
                     ratings.append(rating)
+                    date = review.find_element(By.CLASS_NAME, "title").text
+                    dates.append(date)
                     try:
                         image = review.find_element(By.CLASS_NAME, "review-image")
                         has_image.append(True)
@@ -133,7 +137,8 @@ def scrape_product_info(url):
             "total_purchase": total_purchase,
             "reviews": reviews,
             "ratings":ratings,
-            "has_image":has_image
+            "has_image":has_image,
+            "dates":dates
         }
 
     except Exception as e:
