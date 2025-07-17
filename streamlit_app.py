@@ -1,9 +1,9 @@
 import streamlit as st
 import xgboost as xgb
-import requests
 from PIL import Image
 from io import BytesIO
 import base64
+import webScrape.test as t
 
 def init():
     model = xgb.XGBClassifier()
@@ -24,25 +24,13 @@ def gui():
     if st.button("Scrape"):
         if url:
             with st.spinner("Scraping..."):
-                try:
-                    response = requests.post(
-                        "https://futurehack.onrender.com/scrape",
-                        json={"url": url},
-                        timeout=100  # Optional timeout for safety
-                    )
-                    if response.status_code == 200:
-                        data = response.json()
-                        if "error" in data:
-                            st.error(f"Error: {data['error']}")
-                        else:
-                            image_data = base64.b64decode(data["screenshot"])
-                            image = Image.open(BytesIO(image_data))
-                            st.image(image, caption="Screenshot", use_container_width=True)
-                            st.write("**Title:**", data.get("title"))
-                            st.write("**Price:**", data.get("price"))
-                    else:
-                        st.error(f"Backend Error: {response.status_code}\n{response.text}")
-                except requests.exceptions.RequestException as e:
-                    st.error(f"Request failed: {str(e)}")
+                data = t.scrape_product_info(url)
+                screenshot_data = base64.b64decode(data["screenshot"])
+                screenshot = BytesIO(screenshot_data)
+                st.image(screenshot, caption="Lazada Screenshot")
+                st.write("**Title:**", data.get("title"))
+                st.write("**Price:**", data.get("price"))
+                
+
 
 gui()
