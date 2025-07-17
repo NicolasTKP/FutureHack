@@ -6,9 +6,11 @@ import numpy as np
 import joblib
 import re
 import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
 from nltk.corpus import stopwords
 import pandas as pd
 nltk.download('stopwords')
+nltk.download('vader_lexicon')
 from scipy.sparse import hstack
 
 def init():
@@ -16,10 +18,12 @@ def init():
     ctfpdModel.load_model('model/CtfPd_model.json')
 
     bgdModel = joblib.load('model/Bot_Generated_Detection_Model.pkl')
+    bgdm_vectorizer = joblib.load('model/bgdm_tfidf_vectorizer.pkl')
 
-    vectorizer = joblib.load('model/bgdm_tfidf_vectorizer.pkl')
+    smModel = joblib.load('model/Sentiment_Model.pkl')
+    sm_vectorizer = joblib.load('model/sm_tfidf_vectorizer.pkl')
 
-    return ctfpdModel, bgdModel, vectorizer
+    return ctfpdModel, bgdModel, bgdm_vectorizer, smModel, sm_vectorizer
 
     # data = [50.00, 5, 2, 25]
     # data = np.array([data])
@@ -27,6 +31,7 @@ def init():
     # proba = model.predict_proba(data)
     # print("Probability of counterfeit:", proba[0][1])
 
+sia = SentimentIntensityAnalyzer()
 stop_words = set(stopwords.words('english'))
 def clean_text(text):
     text = str(text).lower()
@@ -36,7 +41,7 @@ def clean_text(text):
     return ' '.join(tokens)
 
 def gui():
-    ctfpdModel, bgdModel, vectorizer = init()
+    ctfpdModel, bgdModel, bgdm_vectorizer, smModel, sm_vectorizer = init()
     st.title("Lazada Scraper")
     url = st.text_input("Enter Lazada product URL:")
 
@@ -44,6 +49,8 @@ def gui():
         if url:
             with st.spinner("Scraping..."):
                 data = scraper.scrape_product_info(url)
+
+                # Product Details
                 if 'screenshot' in data and data['screenshot'] is not None:
                     screenshot_data = base64.b64decode(data['screenshot'])
                     st.image(screenshot_data, caption="Product", use_container_width=True)
@@ -57,14 +64,12 @@ def gui():
 
                 X = [float(data["price"].replace(",", "")), float(data["total_purchase"]), int(data["seller_rating"])]
                 X = np.array([X])
-
+                
+                # Counterfeit detection
                 proba = ctfpdModel.predict_proba(X)
                 if proba[0][1] > 0.8: #threshold for counterfeit detection
                     st.write("⚠️ This product is likely counterfeit.")
                     st.write("**Probability of counterfeit:**", round(proba[0][1] * 100, 2), "%")
-                else:
-                    st.write("✅ This product seems genuine.")
-                    st.write("**Probability of authenticity:**", round((1 - proba[0][1]) * 100, 2), "%")
 
                 st.write("")
                 st.write("")
@@ -73,12 +78,15 @@ def gui():
                     unsafe_allow_html=True
                 )
                 st.write("---")
-
+                
+                # ratings
                 for i in range(len(data["reviews"])):
-                    st.write("**Rating:**",data["ratings"][i])
-                    st.write("**Has Image:**",data["has_image"][i])
-                    st.write("**Review:**",data["reviews"][i])
+                    with st.expander("Review {}".format(i+1)):
+                        st.write("**Rating:**",data["ratings"][i])
+                        st.write("**Has Image:**",data["has_image"][i])
+                        st.write("**Review:**",data["reviews"][i])
 
+                    # Bot detection
                     new_reviews = [
                         {'text_': data["reviews"][i], 'rating': int(data["ratings"][i])},
                     ]
@@ -86,17 +94,41 @@ def gui():
                     
                     new_df['clean_text'] = new_df['text_'].apply(clean_text)
                     new_df['review_length'] = new_df['clean_text'].apply(lambda x: len(x.split()))
-                    X_tfidf_new = vectorizer.transform(new_df['clean_text'])
+                    X_tfidf_new = bgdm_vectorizer.transform(new_df['clean_text'])
                     X_other_new = new_df[['review_length', 'rating']].astype(float).values
                     X_new = hstack([X_tfidf_new, X_other_new])
 
                     proba = bgdModel.predict_proba(X_new)[:, 0]
                     if proba[0] > 0.5: #threshold for bot detection
+                        st.write("")
                         st.write("⚠️ This review is likely bot generated.")
                         st.write("**Probability of bot generated:**", round(proba[0] * 100, 2), "%")
+
+
+                    # Sentiment Detection
+                    new_review = {
+                        'review': data["reviews"][i]
+                    }
+                    new_df = pd.DataFrame([new_review])
+                    new_df['clean_text'] = new_df['review'].apply(clean_text)
+                    new_df['review_length'] = new_df['clean_text'].apply(lambda x: len(x.split()))
+                    new_df['vader_score'] = new_df['review'].apply(lambda x: sia.polarity_scores(x)['compound'])
+
+                    X_tfidf_new = sm_vectorizer.transform(new_df['clean_text'])
+                    X_other_new = new_df[['review_length', 'vader_score']].astype(float).values
+                    X_new = hstack([X_tfidf_new, X_other_new])
+
+                    pred_label = smModel.predict(X_new)[0]
+                    if int(data["ratings"][i]) >= 3:
+                        sentiment = "positive"
                     else:
-                        st.write("✅ This review seems genuine.")
-                        st.write("**Probability of authenticity:**", round((1 - proba[0]) * 100, 2), "%")
+                        sentiment = "negative"
+                    
+                    if pred_label != sentiment:
+                        st.write("")
+                        st.write("⚠️ There might be a mismatch sentiment between rating and review.")
+                        st.write("**Rating Sentiment:**", sentiment)
+                        st.write("**Review Sentiment:**", pred_label)
 
                     st.write("---")
 

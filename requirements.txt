@@ -12,3 +12,4 @@ openpyxl
 nltk
 re
 scipy
+imblearn

@@ -1,11 +1,9 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import base64
-import json
 import time
 import random
 import undetected_chromedriver as uc
@@ -33,9 +31,7 @@ def scrape_product_info(url):
         driver.get(url)
         driver.set_window_size(1920, 1080)
         wait = WebDriverWait(driver, 10)
-        screenshot_bytes = driver.get_screenshot_as_png()
-        screenshot_base64 = base64.b64encode(screenshot_bytes).decode('utf-8')
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        driver.execute_script("window.scrollTo(0, 0);")
         time.sleep(random.uniform(1, 2))
         price_element = wait.until(
             EC.presence_of_element_located((By.CLASS_NAME, "pdp-price_type_normal"))
@@ -84,6 +80,9 @@ def scrape_product_info(url):
         except:
             print("Content not found in review.")
 
+        screenshot_bytes = driver.get_screenshot_as_png()
+        screenshot_base64 = base64.b64encode(screenshot_bytes).decode('utf-8')
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         # while True:
             
         #     next_button_elements = wait.until(
