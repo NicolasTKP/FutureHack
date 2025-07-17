@@ -3,6 +3,7 @@ import xgboost as xgb
 import base64
 import webScrape.scraper as scraper
 import numpy as np
+import json
 
 def init():
     model = xgb.XGBClassifier()
@@ -18,26 +19,33 @@ def init():
 
 def gui():
     model = init()
-    st.title("Lazada Scraper via Backend")
+    st.title("Lazada Scraper")
     url = st.text_input("Enter Lazada product URL:")
 
     if st.button("Scrape"):
         if url:
             with st.spinner("Scraping..."):
                 data = scraper.scrape_product_info(url)
-                if "screenshot" in data and data["screenshot"] is not None:
-                    screenshot_data = base64.b64decode(data["screenshot"])
-                    st.image(screenshot_data, caption="Screenshot", use_column_width=True)
+                if 'screenshot' in data and data['screenshot'] is not None:
+                    screenshot_data = base64.b64decode(data['screenshot'])
+                    st.image(screenshot_data, caption="Product", use_container_width=True)
                 else:
                     st.warning("Screenshot not available.")
-                st.write("**Product Name:**", data.get("title"))
-                st.write("**Price:**", data.get("price"))
-                st.write("**Total Purchase:**", data.get("total_purchase"))
-                st.write("**Seller Ratings:**", data.get("seller_ratings"))
-                X = [float(data.get("price")), float(data.get("seller_ratings")), int(data.get("total_purchase"))]
+                st.write("**Product Name:**", data['title'])
+                st.write("**Price:**", data['price'])
+                st.write("**Total Purchase:**", data["total_purchase"])
+                st.write("**Seller Ratings:**", data['seller_rating'])
+                X = [float(data["price"]), float(data["total_purchase"]), int(data["seller_rating"])]
                 X = np.array([X])
-                proba = model.predict_proba(data)
-                st.write("**Probability of counterfeit:**", proba[0][1])
+                proba = model.predict_proba(X)
+                if proba[0][1] > 0.5:
+                    st.write("⚠️ This review is likely counterfeit.")
+                    st.write("**Probability of counterfeit:**", round(proba[0][1], 2) * 100, "%")
+                else:
+                    st.write("✅ This product seems legitimate.")
+                    st.write("**Probability of authenticity:**", round((1 - proba[0][1]) * 100, 2), "%")
+                
+                
 
     
 
