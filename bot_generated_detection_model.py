@@ -16,7 +16,6 @@ uploaded = files.upload()
 
 import pandas as pd
 import io
-# Example: Replace with your real data path
 df = pd.read_excel(io.BytesIO(uploaded['fake reviews dataset (new).xlsx']))
 
 """Import libraries"""
