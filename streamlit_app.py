@@ -13,6 +13,13 @@ nltk.download('stopwords')
 nltk.download('vader_lexicon')
 from scipy.sparse import hstack
 
+malicious_words = set([
+    "cheating","fuck","terrible","brainless","hell","sb","stupid","idiot","useless","not worth","sucks","garbage","trash","fool","worst","scam","hate", "dumbass", "nonsense","fake","ass",
+    "tipu","skam","jangan beli","bodoh","sial","penipu","palse","rosak","babi","teruk", "tak guna", "sampah", "celaka"
+])
+sia = SentimentIntensityAnalyzer()
+stop_words = set(stopwords.words('english'))
+
 def init():
     ctfpdModel = xgb.XGBClassifier()
     ctfpdModel.load_model('model/CtfPd_model.json')
@@ -31,14 +38,16 @@ def init():
     # proba = model.predict_proba(data)
     # print("Probability of counterfeit:", proba[0][1])
 
-sia = SentimentIntensityAnalyzer()
-stop_words = set(stopwords.words('english'))
 def clean_text(text):
     text = str(text).lower()
     text = re.sub(r'[^a-z\s]', '', text)  # remove punctuation/numbers
     tokens = text.split()
     tokens = [word for word in tokens if word not in stop_words]
     return ' '.join(tokens)
+
+def contains_malicious(text, word_set):
+    matched_words = [word for word in word_set if re.search(rf'\b{re.escape(word)}\b', text, re.IGNORECASE)]
+    return bool(matched_words), matched_words
 
 def gui():
     ctfpdModel, bgdModel, bgdm_vectorizer, smModel, sm_vectorizer = init()
@@ -130,8 +139,16 @@ def gui():
                         st.write("**Rating Sentiment:**", sentiment)
                         st.write("**Review Sentiment:**", pred_label)
 
-                    st.write("---")
+                    # Malicious word detection
+                    for index, row in new_df.iterrows():
+                        isMalicious, matchWords = contains_malicious(row['clean_text'], malicious_words)
 
+                        if isMalicious:
+                            st.write("")
+                            st.write("⚠️ There is a malicious word contained in this review.")
+                            st.write("**Malicious words:**", matchWords)
+
+                    st.write("---")
                 
                 
 
