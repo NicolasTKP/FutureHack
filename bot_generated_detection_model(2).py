@@ -9,14 +9,20 @@ Original file is located at
 Import file
 """
 
-from google.colab import files
-uploaded = files.upload()
+#from google.colab import files
+#uploaded = files.upload()
 
 """Load your dataset"""
 
+#import pandas as pd
+#import io
+#df = pd.read_excel(io.BytesIO(uploaded['fake reviews dataset (new).xlsx']))
 import pandas as pd
-import io
-df = pd.read_excel(io.BytesIO(uploaded['fake reviews dataset (new).xlsx']))
+
+file_path = "C:\\Users\\User\\Documents\\fake reviews dataset (new).xlsx"
+df = pd.read_excel(file_path)
+
+
 
 """Import libraries"""
 
