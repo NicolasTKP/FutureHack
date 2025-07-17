@@ -9,14 +9,20 @@ Original file is located at
 Import file
 """
 
-from google.colab import files
-uploaded = files.upload()
+#from google.colab import files
+#uploaded = files.upload()
 
 """Load your dataset"""
 
+#import pandas as pd
+#import io
+#df = pd.read_excel(io.BytesIO(uploaded['fake reviews dataset (new).xlsx']))
 import pandas as pd
-import io
-df = pd.read_excel(io.BytesIO(uploaded['fake reviews dataset (new).xlsx']))
+
+file_path = "data/fake reviews dataset (new).xlsx"
+df = pd.read_excel(file_path)
+
+
 
 """Import libraries"""
 
@@ -60,8 +66,7 @@ X_tfidf = tfidf.fit_transform(df['clean_text'])
 
 # Step 3: Combine TF-IDF with other numerical features
 # Select all category_* columns + review_length
-category_cols = [col for col in df.columns if col.startswith('category_')]
-X_other = df[['review_length'] + category_cols].astype(float).values
+X_other = df[['review_length', 'rating']].astype(float).values
 
 # Step 4: Combine sparse + dense
 X = hstack([X_tfidf, X_other])
@@ -95,7 +100,7 @@ print("ROC-AUC Score:", roc_auc_score(y_test, y_prob))
 
 new_review = {
     'text_': "This product is amazing! I’ve never seen anything like it before. Highly recommend to everyone.",
-    'category': "Books"
+    'rating': 2
 }
 
 new_df = pd.DataFrame([new_review])
@@ -106,17 +111,11 @@ new_df['clean_text'] = new_df['text_'].apply(clean_text)
 # Review length
 new_df['review_length'] = new_df['clean_text'].apply(lambda x: len(x.split()))
 
-# One-hot encode category (make sure to match the columns used during training)
-for col in category_cols:
-    new_df[col] = 0  # Add all expected dummy columns
-    if col == 'category_' + new_review['category']:
-        new_df[col] = 1
-
 X_tfidf_new = tfidf.transform(new_df['clean_text'])
 
-X_other_new = new_df[['review_length'] + category_cols].astype(float).values
+X_other_new = new_df[['review_length', 'rating']].astype(float).values
 from scipy.sparse import hstack
-X_new = hstack([X_tfidf_new, X_other_new])
+X_new = hstack([tfidf.transform(new_df['clean_text']),X_other_new])
 
 pred_label = model.predict(X_new)[0]
 pred_prob = model.predict_proba(X_new)[0][0]
@@ -127,8 +126,8 @@ print("Probability (bot-generated):", pred_prob)
 """Test"""
 
 new_reviews = [
-    {'text_': "Great value. Delivered quickly. Would buy again.", 'category': "Electronics"},
-    {'text_': "Best product I've ever used!!! Highly recommend!!!", 'category': "Beauty"},
+    {'text_': "Great value. Delivered quickly. Would buy again.", 'rating': 5},
+    {'text_': "Best product I've ever used!!! Highly recommend!!!", 'rating': 4},
 ]
 
 # Convert to DataFrame
@@ -140,19 +139,12 @@ new_df['clean_text'] = new_df['text_'].apply(clean_text)
 # Review length
 new_df['review_length'] = new_df['clean_text'].apply(lambda x: len(x.split()))
 
-# One-hot encode categories
-for col in category_cols:
-    new_df[col] = 0
-for i, row in new_df.iterrows():
-    col_name = 'category_' + row['category']
-    if col_name in category_cols:
-        new_df.at[i, col_name] = 1
 
 # TF-IDF
 X_tfidf_new = tfidf.transform(new_df['clean_text'])
 
 # Combine features
-X_other_new = new_df[['review_length'] + category_cols].astype(float).values
+X_other_new = new_df[['review_length', 'rating']].astype(float).values
 X_new = hstack([X_tfidf_new, X_other_new])
 
 # Predict
@@ -166,3 +158,10 @@ for i, review in enumerate(new_df['text_']):
     print("Detection:", pred_labels[i])
     print(f"Probability of bot-generated (CG): {pred_probs[i]:.4f}")
     print("---")
+
+
+
+#Save model
+import joblib
+joblib.dump(tfidf, 'model/bgdm_tfidf_vectorizer.pkl')
+joblib.dump(model, 'model/Bot_Generated_Detection_Model.pkl')
