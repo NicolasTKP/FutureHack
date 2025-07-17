@@ -18,9 +18,16 @@ def scrape_product_info(url):
 
             title_element = page.locator("h1.pdp-mod-product-badge-title").first
             price_element = page.locator(".pdp-price_type_normal").first
+            seller_rating_element = page.locator(".rating-positive").first
+            total_purchase_element = page.locator(".pdp-review-summary__link").first
 
             title = title_element.inner_text()
-            price = price_element.inner_text()
+            price = price_element.inner_text().replace("RM ","")
+            seller_rating = seller_rating_element.inner_text().replace("%","")
+            percentage = int(seller_rating)
+            rating = 1.0 + (percentage / 100) * 4.0
+            seller_rating = round(rating, 1)
+            total_purchase = total_purchase_element.inner_text().replace("Ratings", "")
 
             # Screenshot in base64
             screenshot_bytes = page.screenshot(full_page=True)
@@ -29,7 +36,9 @@ def scrape_product_info(url):
             result = {
                 "title": title,
                 "price": price,
-                "screenshot": screenshot_base64
+                "screenshot": screenshot_base64,
+                "seller_rating": seller_rating,
+                "total_purchase": total_purchase,
             }
 
         except Exception as e:
