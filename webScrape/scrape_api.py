@@ -19,8 +19,12 @@ def scrape():
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-
-    driver = webdriver.Chrome(options=options)
+    BROWSERLESS_TOKEN = '2SgxintGKYQq7fS0e9cbecda5e203d0695049b406239675f1'
+    BROWSERLESS_URL = f"https://production-sfo.browserless.io?token={BROWSERLESS_TOKEN}"
+    driver = webdriver.Remote(
+        command_executor="https://production-sfo.browserless.io/webdriver?token=2SgxintGKYQq7fS0e9cbecda5e203d0695049b406239675f1",
+        options=options
+    )
 
     try:
         driver.get(url)

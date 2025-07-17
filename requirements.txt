@@ -7,3 +7,4 @@ scikit-learn
 selenium
 flask
 gunicorn
+playwright-stealth
