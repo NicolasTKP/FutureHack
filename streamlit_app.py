@@ -42,7 +42,7 @@ def gui():
                     st.write("⚠️ This review is likely counterfeit.")
                     st.write("**Probability of counterfeit:**", round(proba[0][1], 2) * 100, "%")
                 else:
-                    st.write("✅ This product seems legitimate.")
+                    st.write("✅ This product seems genuine.")
                     st.write("**Probability of authenticity:**", round((1 - proba[0][1]) * 100, 2), "%")
                 
                 
