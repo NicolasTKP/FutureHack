@@ -8,3 +8,7 @@ selenium
 beautifulsoup4
 json
 undetected-chromedriver
+openpyxl
+nltk
+re
+scipy
