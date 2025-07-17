@@ -170,4 +170,4 @@ for i, review in enumerate(new_df['text_']):
 #Save model
 import joblib
 
-joblib.dump(model, 'Bot_Generated_Detection_Model.ipynb')
+joblib.dump(model, 'Bot_Generated_Detection_Model.pkl')
