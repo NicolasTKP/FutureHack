@@ -1,7 +1,7 @@
 # Lazada Veracity Checker
 This project builds and trains a machine learning model to detect fake products and reviews using Natural Language Processing (NLP) techniques. The goal is to help Lazada user identify fake products and reviews that could mislead customers. 
 
-![Example](Example.png) ![Example2](Example2.png)
+![Example](Example.png)
 
 ## Installation Guidance
 **Install the following python dependency**
