@@ -49,6 +49,7 @@ Confusion Matrix:
 ROC-AUC Score: 0.9460312031418922
 ```
 - **LinearSVC model (Review and Rating Sentiment Matching Model)**
+```
 Classification Report:
                precision    recall  f1-score   support
 
@@ -62,6 +63,7 @@ weighted avg       0.81      0.81      0.81     91056
 Confusion Matrix:
  [[36320  9208]
  [ 7991 37537]]
+```
 ## Installation
 **Install the following python dependency**
 
