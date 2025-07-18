@@ -82,7 +82,7 @@ def scrape_product_info(url):
                 except:
                     print("Content not found in review.")
         except:
-            print("Content not found in review.")
+            print("error.")
 
         screenshot_bytes = driver.get_screenshot_as_png()
         screenshot_base64 = base64.b64encode(screenshot_bytes).decode('utf-8')

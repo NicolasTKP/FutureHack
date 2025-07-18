@@ -12,7 +12,7 @@ from scipy.sparse import hstack
 nltk.download('vader_lexicon')
 nltk.download('stopwords')
 
-file_path = "data/review_sentiment.csv"
+file_path = 'data\\review_sentiment.csv'
 df = pd.read_csv(file_path)
 
 """Text preprocessing"""

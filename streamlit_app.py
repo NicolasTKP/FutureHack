@@ -41,6 +41,8 @@ def clean_text(text):
     return ' '.join(tokens)
 
 def compute_cosine_similarities(df, threshold=0.85):
+    if df.empty:
+        return []
     ctfpdModel, bgdModel, bgdm_vectorizer, smModel, sm_vectorizer = init()
     tfidf_matrix = sm_vectorizer.transform(df['clean_text'])
     similarity_matrix = cosine_similarity(tfidf_matrix)
@@ -166,17 +168,13 @@ def gui():
 
                     st.write("---")
 
-                print(data["reviews"])
-
                 #   consine similarity                
                 review_df = pd.DataFrame({
                     'review': data["reviews"]
                 })
-
                 review_df['clean_text'] = review_df['review'].apply(clean_text)
-                print(review_df)
                 similar_pairs = compute_cosine_similarities(review_df, threshold=0.75)
-                print(similar_pairs)
+
                 if similar_pairs:
                     st.markdown(
                         "<h1 style='text-align: center;'>Suspicious Reviews with High Similarity</h1>",

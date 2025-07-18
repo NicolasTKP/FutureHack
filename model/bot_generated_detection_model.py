@@ -19,7 +19,7 @@ Import file
 #df = pd.read_excel(io.BytesIO(uploaded['fake reviews dataset (new).xlsx']))
 import pandas as pd
 
-file_path = "data/fake reviews dataset (new).xlsx"
+file_path = "data\\fake reviews dataset (new).xlsx"
 df = pd.read_excel(file_path)
 
 
