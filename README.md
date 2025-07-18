@@ -22,6 +22,15 @@ The goal is to help e-commerce platforms identify fake reviews that could mislea
   - Confusion Matrix
   - Classification Report (Precision, Recall, F1)
   - ROC-AUC Score
+- **Review and Rating Sentiment Matching Model**
+  This project uses LinearSVC model to 
+    - Analyse the text sentiment of a product review
+    - Compare the result with the given rating
+    - Flag inconsistencies (difference between predicted rating and given rating >=2)
+## Rule-Based Malicious Word Detection
+ This project includes a rule-based module and a utility function to 
+   - Detect and flag reviews that contain malicious or rude keywords
+   - Identify toxic words in both Engliah and Malay
 ## Performance
 ```
 Classification Report:
@@ -39,6 +48,20 @@ Confusion Matrix:
  [ 469 3574]]
 ROC-AUC Score: 0.9460312031418922
 ```
+- **LinearSVC model (Review and Rating Sentiment Matching Model)**
+Classification Report:
+               precision    recall  f1-score   support
+
+    negative       0.82      0.80      0.81     45528
+    positive       0.80      0.82      0.81     45528
+
+    accuracy                           0.81     91056
+   macro avg       0.81      0.81      0.81     91056
+weighted avg       0.81      0.81      0.81     91056
+
+Confusion Matrix:
+ [[36320  9208]
+ [ 7991 37537]]
 ## Installation
 **Install the following python dependency**
 
