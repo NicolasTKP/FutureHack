@@ -106,22 +106,6 @@ Confusion Matrix:
  [ 469 3574]]
 ROC-AUC Score: 0.9460312031418922
 ```
-
-```
-FAISS Similarity Search
-Limited dataset to 1,000 most recent reviews to optimize memory usage and runtime.
-
-FAISS approximate nearest neighbor search returned top-5 similar reviews per entry in milliseconds.
-
-Applied a similarity threshold of 0.85 to filter highly similar pairs.
-
-**Sample Output**:
-| review_id_1 | review_id_2 | similarity_score | product_id |
-|-------------|-------------|------------------|------------|
-| 46          | 457         | 1.0              | eng_product |
-| 130         | 4           | 1.0              | eng_product |
-| 177         | 897         | 0.898            | eng_product |
-```
 **LinearSVC model (Review and Rating Sentiment Matching Model)**
 ```
 Classification Report:
