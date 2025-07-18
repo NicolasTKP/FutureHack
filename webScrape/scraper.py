@@ -26,10 +26,10 @@ def scrape_product_info(url):
             })
         """
     })
+    driver.set_window_size(1920, 1080)
 
     try:
         driver.get(url)
-        driver.set_window_size(1920, 1080)
         wait = WebDriverWait(driver, 5)
         driver.execute_script("window.scrollTo(0, 0);")
         time.sleep(random.uniform(1, 2))

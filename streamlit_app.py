@@ -52,14 +52,12 @@ def compute_cosine_similarities(df, threshold=0.85):
         for j in range(i + 1, num_reviews):
             similarity_score = similarity_matrix[i, j]
             if similarity_score > threshold:
-                print(f"[DEBUG] Similarity between review {i} and {j}: {similarity_score}")
                 similar_pairs.append({
                     "review_1": df['review'].iloc[i],
                     "review_2": df['review'].iloc[j],
                     "similarity_score": similarity_score
                 })
 
-    print(f"[DEBUG] Total similar pairs found: {len(similar_pairs)}")
     return similar_pairs
 
 def contains_malicious(text, word_set):
@@ -94,10 +92,10 @@ def gui():
                 # Counterfeit detection
                 proba = ctfpdModel.predict_proba(X)
                 if proba[0][1] > 0.8: #threshold for counterfeit detection
+                    st.write("")
                     st.write("⚠️ This product is likely counterfeit.")
                     st.write("**Probability of counterfeit:**", round(proba[0][1] * 100, 2), "%")
 
-                st.write("")
                 st.write("")
                 st.markdown(
                     "<h1 style='text-align: center;'>Customer Reviews</h1>",
@@ -168,15 +166,17 @@ def gui():
 
                     st.write("---")
 
+                print(data["reviews"])
 
-                #   consine similarity
+                #   consine similarity                
                 review_df = pd.DataFrame({
                     'review': data["reviews"]
                 })
 
                 review_df['clean_text'] = review_df['review'].apply(clean_text)
+                print(review_df)
                 similar_pairs = compute_cosine_similarities(review_df, threshold=0.75)
-
+                print(similar_pairs)
                 if similar_pairs:
                     st.markdown(
                         "<h1 style='text-align: center;'>Suspicious Reviews with High Similarity</h1>",
