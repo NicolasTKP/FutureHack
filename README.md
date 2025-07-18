@@ -43,7 +43,7 @@ ROC-AUC Score: 0.9460312031418922
 **Install the following python dependency**
 
 ```python
-pip install pandas numpy scikit-learn nltk openpyxl joblib
+pip install requirements.txt
 ```
 ## Model file
 Trained model saved as: `Bot_Generated_Detection_Model.pkl`
