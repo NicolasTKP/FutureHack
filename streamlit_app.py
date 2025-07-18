@@ -15,8 +15,8 @@ from scipy.sparse import hstack
 from sklearn.metrics.pairwise import cosine_similarity
 
 malicious_words = set([
-    "cheating","fuck","terrible","brainless","hell","sb","stupid","idiot","useless","not worth","sucks","garbage","trash","fool","worst","scam","hate", "dumbass", "nonsense","fake","ass",
-    "tipu","skam","jangan beli","bodoh","sial","penipu","palse","rosak","babi","teruk", "tak guna", "sampah", "celaka"
+    "cheating","fuck","terrible","brainless","hell","sb","stupid","idiot","useless","sucks","garbage","trash","fool","hate", "dumbass", "nonsense","fake","ass",
+    "tipu","skam","jangan beli","bodoh","sial","penipu","palse","babi","teruk", "tak guna", "sampah", "celaka"
 ])
 sia = SentimentIntensityAnalyzer()
 stop_words = set(stopwords.words('english'))
@@ -32,12 +32,6 @@ def init():
     sm_vectorizer = joblib.load('model/sm_tfidf_vectorizer.pkl')
 
     return ctfpdModel, bgdModel, bgdm_vectorizer, smModel, sm_vectorizer
-
-    # data = [50.00, 5, 2, 25]
-    # data = np.array([data])
-
-    # proba = model.predict_proba(data)
-    # print("Probability of counterfeit:", proba[0][1])
 
 def clean_text(text):
     text = str(text).lower()
@@ -68,14 +62,13 @@ def compute_cosine_similarities(df, threshold=0.85):
     print(f"[DEBUG] Total similar pairs found: {len(similar_pairs)}")
     return similar_pairs
 
-
 def contains_malicious(text, word_set):
     matched_words = [word for word in word_set if re.search(rf'\b{re.escape(word)}\b', text, re.IGNORECASE)]
     return bool(matched_words), matched_words
 
 def gui():
     ctfpdModel, bgdModel, bgdm_vectorizer, smModel, sm_vectorizer = init()
-    st.title("Lazada Scraper")
+    st.title("Lazada Veracity Checker")
     url = st.text_input("Enter Lazada product URL:")
 
     if st.button("Scrape"):
@@ -133,7 +126,7 @@ def gui():
                     X_new = hstack([X_tfidf_new, X_other_new])
 
                     proba = bgdModel.predict_proba(X_new)[:, 0]
-                    if proba[0] > 0.5: #threshold for bot detection
+                    if proba[0] > 0.7: #threshold for bot detection
                         st.write("")
                         st.write("⚠️ This review is likely bot generated.")
                         st.write("**Probability of bot generated:**", round(proba[0] * 100, 2), "%")
@@ -160,7 +153,7 @@ def gui():
                     
                     if pred_label != sentiment:
                         st.write("")
-                        st.write("⚠️ There might be a mismatch sentiment between rating and review.")
+                        st.write("⚠️ There might be a mismatch of sentiment between rating and review.")
                         st.write("**Rating Sentiment:**", sentiment)
                         st.write("**Review Sentiment:**", pred_label)
 
@@ -176,7 +169,7 @@ def gui():
                     st.write("---")
 
 
-                #   consine similarity                
+                #   consine similarity
                 review_df = pd.DataFrame({
                     'review': data["reviews"]
                 })
@@ -196,5 +189,4 @@ def gui():
                         st.write("---")
                 
     
-
 gui()
