@@ -45,37 +45,3 @@ ROC-AUC Score: 0.9460312031418922
 ```python
 pip install requirements.txt
 ```
-## Model file
-Trained model saved as: `Bot_Generated_Detection_Model.pkl`
-
-**To load:**
-```python
-import joblib
-model = joblib.load('Bot_Generated_Detection_Model.pkl')
-```
-
-## Structure of Bot-Generated Review Detection
-This repository contains a trained detection system for identifying bot-generated product reviews. The structure of the main modules is shown below:
-```python
-bot_review_detection/
-├── model_training/
-│ └── train.py # Script to preprocess data and train the logistic regression model
-├── inference/
-│ └── predict.py # Script to load the model and make predictions
-├── utils/
-│ └── text_cleaning.py # Text preprocessing and stopword removal
-├── data/
-│ └── fake_reviews.xlsx # Dataset with columns: text_, rating, label
-└── Bot_Generated_Detection_Model.pkl # Trained model file
-```
-The model requires three main input fields:
-- **text_**: The product review content.
-- **rating**: The numeric rating given (1–5).
-- **label**: The ground truth class (0 = bot-generated, 1 = human-written).
-
-The model uses TF-IDF for text feature extraction, combines it with numerical features (rating, review length), and applies a logistic regression classifier for detection.
-
-You may edit the `text_cleaning.py` file to customize preprocessing rules.  
-The training logic is located in `train.py` under `model_training/`.
-
-The trained model is saved as `Bot_Generated_Detection_Model.pkl` for easy reuse during prediction.
