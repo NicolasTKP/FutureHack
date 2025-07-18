@@ -30,7 +30,7 @@ The goal is to help e-commerce platforms identify fake reviews that could mislea
 ## Rule-Based Malicious Word Detection
  This project includes a rule-based module and a utility function to 
    - Detect and flag reviews that contain malicious or rude keywords
-   - Identify toxic words in both Engliah and Malay
+   - Identify toxic words in both English and Malay
 ## Performance
 ```
 Classification Report:
