@@ -32,7 +32,7 @@ The model is trained to classify user reviews as either genuine (0) or fake (1) 
    - Detect and flag reviews that contain malicious or rude keywords
    - Identify toxic words in both English and Malay
 
-### Rule-Based Similar Review Detection with FAISS
+## Rule-Based Similar Review Detection with FAISS
 
 This project uses memory-efficient semantic similarity detection using **TF-IDF vectorization + FAISS** for large datasets.
 
