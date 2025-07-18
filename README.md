@@ -15,7 +15,7 @@ pip install requirements.txt
 The current Chrome Driver (for *Selenium* web scraping) only support Google Chrome version **138**, which is the latest version. If your Google Chrome is having a older version, please download the Chrome Driver that match with your Google Chrome Version in https://googlechromelabs.github.io/chrome-for-testing/. The document is in https://developer.chrome.com/docs/chromedriver/downloads#chromedriver_920451543.
 
 
-After you had install all dependency and verify the Google Chrome Version, you may run
+After you had install all dependency and verify the Google Chrome version, you may run
 ```python
 python main.py
 ```
