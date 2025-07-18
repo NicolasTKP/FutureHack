@@ -19,7 +19,11 @@ After you had install all dependency and verify the Google Chrome version, you m
 ```python
 python main.py
 ```
-It will pop up an interface that allows you to insert any Lazada product URL. The user must manually complete the human verification on the Google Chrome page that pop up, since we are not capable to bypass the CAPTCHA detection. The user will have some time to complete the human verification, if the user didn't pass the human verification within certain time, the Google Chrome page will be close. After the user had completed the verification, please wait patiently for the backend code to perform web scraping. Sometimes the web scraping might fail due Lazada API failed to fetch product data (where you will see there is 0 rating and 0 review) or the Lazada API accidently fetched mobile device page instead of desktop page, please try again if this happned.
+It will pop up an interface that allows you to insert any Lazada product URL. 
+
+The user must manually complete the human verification on the Google Chrome page that pop up, since we are not capable to bypass the *CAPTCHA* detection. The user will have some time to complete the human verification, if the user didn't pass the human verification within certain time, the Google Chrome page will be close. 
+
+After the user had completed the verification, please wait patiently for the backend code to perform web scraping. Sometimes the web scraping might fail due Lazada API failed to fetch product data (where you will see there is 0 rating and 0 review) or the Lazada API accidently fetched mobile device page instead of desktop page, please try again if this happned.
 
 ## Demonstration Video & Architecture Slides
 Video:
