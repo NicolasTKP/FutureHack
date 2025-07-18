@@ -76,6 +76,16 @@ This project uses *XGBClassifier* model to identify if a product is counterfeit 
    - seller rating
    - purchases amount
 
+## Rule-Based Malicious Word Detection
+
+ This project includes a rule-based module and a utility function to 
+   - Detect and flag reviews that contain malicious or rude keywords
+   - Identify toxic words in both English and Malay
+
+## Rule-Based Similar Review Detection with FAISS
+
+This project uses memory-efficient semantic similarity detection using **TF-IDF vectorization + FAISS** for large datasets.
+
 ## Performance
 
 **Logistic Regression model (Bot-generated Reviews Detection)**
@@ -124,13 +134,3 @@ weighted avg     0.9450    0.9410    0.9419      1000
 
 ROC‑AUC: 0.9939
 ```
-
-## Rule-Based Malicious Word Detection
-
- This project includes a rule-based module and a utility function to 
-   - Detect and flag reviews that contain malicious or rude keywords
-   - Identify toxic words in both English and Malay
-
-## Rule-Based Similar Review Detection with FAISS
-
-This project uses memory-efficient semantic similarity detection using **TF-IDF vectorization + FAISS** for large datasets.
