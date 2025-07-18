@@ -17,7 +17,7 @@ The current Chrome Driver (for *Selenium* web scraping) only support Google Chro
 
 After you had install all dependency and verify the Google Chrome Version, you may run
 ```python
-main.py
+python main.py
 ```
 It will pop up an interface that allows you to insert any Lazada product URL.
 
@@ -80,7 +80,7 @@ This project uses memory-efficient semantic similarity detection using **TF-IDF 
 
 ## Performance
 
-**Logistic regression model (bot-generated reviews detection)**
+**Logistic Regression model (Bot-generated Reviews Detection)**
 ```
 FAISS Similarity Search
 Limited dataset to 1,000 most recent reviews to optimize memory usage and runtime.
