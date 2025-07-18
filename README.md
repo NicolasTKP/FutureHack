@@ -90,6 +90,23 @@ This project uses memory-efficient semantic similarity detection using **TF-IDF 
 ## Performance
 
 **Logistic Regression model (Bot-generated Reviews Detection)**
+```python
+Classification Report:
+               precision    recall  f1-score   support
+
+          CG       0.88      0.86      0.87      4044
+          OR       0.87      0.88      0.88      4043
+
+    accuracy                           0.87      8087
+   macro avg       0.87      0.87      0.87      8087
+weighted avg       0.87      0.87      0.87      8087
+
+Confusion Matrix:
+ [[3492  552]
+ [ 469 3574]]
+ROC-AUC Score: 0.9460312031418922
+```
+
 ```
 FAISS Similarity Search
 Limited dataset to 1,000 most recent reviews to optimize memory usage and runtime.
