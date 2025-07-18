@@ -15,11 +15,15 @@ pip install requirements.txt
 The current Chrome Driver (for *Selenium* web scraping) only support Google Chrome version **138**, which is the latest version. If your Google Chrome is having a older version, please download the Chrome Driver that match with your Google Chrome Version in https://googlechromelabs.github.io/chrome-for-testing/. The document is in https://developer.chrome.com/docs/chromedriver/downloads#chromedriver_920451543.
 
 
-After you had install all dependency and verify the Google Chrome Version, you may run
+After you had install all dependency and verify the Google Chrome version, you may run
 ```python
-main.py
+python main.py
 ```
-It will pop up an interface that allows you to insert any Lazada product URL.
+It will pop up an interface that allows you to insert any Lazada product URL. 
+
+The user must manually complete the human verification on the Google Chrome page that pop up, since we are not capable to bypass the *CAPTCHA* detection. The user will have some time to complete the human verification, if the user didn't pass the human verification within certain time, the Google Chrome page will be close. 
+
+After the user had completed the verification, please wait patiently for the backend code to perform web scraping. Sometimes the web scraping might fail due Lazada API failed to fetch product data (where you will see there is 0 rating and 0 review) or the Lazada API accidently fetched mobile device page instead of desktop page, please try again if this happned.
 
 ## Demonstration Video & Architecture Slides
 Video:
@@ -80,7 +84,7 @@ This project uses memory-efficient semantic similarity detection using **TF-IDF 
 
 ## Performance
 
-**Logistic regression model (bot-generated reviews detection)**
+**Logistic Regression model (Bot-generated Reviews Detection)**
 ```
 FAISS Similarity Search
 Limited dataset to 1,000 most recent reviews to optimize memory usage and runtime.
