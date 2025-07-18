@@ -23,10 +23,12 @@ The goal is to help e-commerce platforms identify fake reviews that could mislea
   - Classification Report (Precision, Recall, F1)
   - ROC-AUC Score
 - **Review and Rating Sentiment Matching Model**
-  This project uses LinearSVC model to 
+
+   This project uses LinearSVC model to 
     - Analyse the text sentiment of a product review
     - Compare the result with the given rating
     - Flag inconsistencies (difference between predicted rating and given rating >=2)
+
 ## Rule-Based Malicious Word Detection
  This project includes a rule-based module and a utility function to 
    - Detect and flag reviews that contain malicious or rude keywords
