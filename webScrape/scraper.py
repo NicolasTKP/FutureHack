@@ -26,10 +26,10 @@ def scrape_product_info(url):
             })
         """
     })
+    driver.set_window_size(1920, 1080)
 
     try:
         driver.get(url)
-        driver.set_window_size(1920, 1080)
         wait = WebDriverWait(driver, 5)
         driver.execute_script("window.scrollTo(0, 0);")
         time.sleep(random.uniform(1, 2))
@@ -82,7 +82,7 @@ def scrape_product_info(url):
                 except:
                     print("Content not found in review.")
         except:
-            print("Content not found in review.")
+            print("error.")
 
         screenshot_bytes = driver.get_screenshot_as_png()
         screenshot_base64 = base64.b64encode(screenshot_bytes).decode('utf-8')
