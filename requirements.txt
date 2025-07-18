@@ -13,3 +13,4 @@ nltk
 re
 scipy
 imblearn
+faiss-cpu
