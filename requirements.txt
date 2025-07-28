@@ -6,11 +6,9 @@ pandas
 scikit-learn
 selenium
 beautifulsoup4
-json
 undetected-chromedriver
 openpyxl
 nltk
-re
 scipy
 imblearn
 faiss-cpu
