@@ -3,6 +3,8 @@ import xgboost as xgb
 import joblib
 import pandas as pd
 import re
+import nltk
+nltk.data.path.append('./model/nltk_data')
 from nltk.corpus import stopwords
 from scipy.sparse import hstack
 import numpy as np
