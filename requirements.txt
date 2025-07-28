@@ -13,3 +13,4 @@ scipy
 imblearn
 faiss-cpu
 gunicorn
+flask
