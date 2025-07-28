@@ -8,6 +8,7 @@ nltk.data.path.append('./model/nltk_data')
 from nltk.corpus import stopwords
 from scipy.sparse import hstack
 import numpy as np
+from flask_cors import CORS
 stop_words = set(stopwords.words('english'))
 
 def init():
@@ -32,6 +33,7 @@ def clean_text(text):
 
 ctfpdModel, bgdModel, bgdm_vectorizer, smModel, sm_vectorizer = init()
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/post/bg', methods=['POST'])
 def bot_generate():

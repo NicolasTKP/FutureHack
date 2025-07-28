@@ -14,3 +14,4 @@ imblearn
 faiss-cpu
 gunicorn
 flask
+flask_cors

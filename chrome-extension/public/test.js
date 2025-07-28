@@ -3,7 +3,7 @@ const reviewData = {
   rating: 5
 };
 
-fetch("http://localhost:10000/post/bg", {
+fetch("https://futurehack.onrender.com/post/bg", {
   method: "POST",
   headers: {
     "Content-Type": "application/json"
