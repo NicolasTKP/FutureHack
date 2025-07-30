@@ -1,39 +1,49 @@
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import './App.css';
 
 function App() {
-  const onClick = async () => {
-    let [tab] = await chrome.tabs.query({active:true, currentWindow: true });
-    chrome.scripting.executeScript({
-        target: {tabId: tab.id!},
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    chrome.storage.local.get('veracityEnabled', (result) => {
+      if (result.veracityEnabled !== undefined) {
+        setEnabled(result.veracityEnabled);
+      }
+    });
+  }, []);
+
+  const onToggle = async () => {
+    const newStatus = !enabled;
+    setEnabled(newStatus);
+    chrome.storage.local.set({ veracityEnabled: newStatus });
+
+    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+    if (newStatus) {
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id! },
         files: ["content.js"],
-    })
-  }
+      }).then(() => {
+        chrome.tabs.sendMessage(tab.id!, { action: "enable_veracity_checker" });
+      });
+    } else {
+      chrome.tabs.sendMessage(tab.id!, { action: "disable_veracity_checker" });
+    }
+  };
+
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
+      <h1>Lazada Veracity Checker</h1>
       <div className="card">
-        <button onClick={onClick}>
-          Click me
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        {/* Toggle switch */}
+        <label className="switch">
+          <input type="checkbox" checked={enabled} onChange={onToggle} />
+          <span className="slider round"></span>
+        </label>
+        <p>Toggle the trigger to enable the checker</p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
