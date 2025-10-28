@@ -26,7 +26,7 @@ const productData = {
   seller_rating: 4
 };
 
-fetch("http://localhost:10000/post/cp", {
+fetch("https://futurehack.onrender.com/post/cp", {
   method: "POST",
   headers: {
     "Content-Type": "application/json"
